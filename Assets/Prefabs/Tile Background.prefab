@@ -52,15 +52,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84c84b5fa74e3124d9333f541d8fc3ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paints:
-  - {fileID: 1715241399372446, guid: 18b809e40994f51438b06813c4eff795, type: 2}
-  - {fileID: 1453847111374214, guid: 72452f6a690cc5848a4bc968b3d3a104, type: 2}
-  - {fileID: 1957150724598204, guid: 6345ffd1dccd9ea48b8b4cf3167f7123, type: 2}
-  - {fileID: 1578338752735938, guid: 9af8d247e63fd5846b8562ac31642a8d, type: 2}
-  - {fileID: 1252913003080684, guid: 51b91be594b193a42a11d38ea9e3aed9, type: 2}
-  - {fileID: 1867622714853190, guid: c7c4e54b60c6bc54eb2ff1e9cddb2d8d, type: 2}
-  - {fileID: 1081770270087880, guid: 3fa7277800a9744439a1e3b200b72019, type: 2}
-  - {fileID: 1412289280392728, guid: 0031f4f116b83ef4d950e395a641f15d, type: 2}
 --- !u!212 &212174051274286886
 SpriteRenderer:
   m_ObjectHideFlags: 1

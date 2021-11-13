@@ -13,6 +13,7 @@ public class Paint : MonoBehaviour {
 	public int targetY;
 	public bool isMatched = false;
 
+	private FindMatches findMatches;
 	private Board board;
 	private GameObject otherPaint;
 	private Vector2 firstTouchPosition;
@@ -20,20 +21,23 @@ public class Paint : MonoBehaviour {
 	private Vector2 tempPosition;
 	public float swipeAngle = 0;
 	public float swipeResist = 1f;
+
+
 	// Use this for initialization
 	void Start () {
 		board = FindObjectOfType<Board>();
-		targetX = (int)transform.position.x;
-		targetY = (int)transform.position.y;
-		row = targetY;
-		column = targetX;
-		previousRow = row;
-		previousColumn = column;
+		findMatches = FindObjectOfType<FindMatches>();
+		//targetX = (int)transform.position.x;
+		//targetY = (int)transform.position.y;
+		//row = targetY;
+		//column = targetX;
+		//previousRow = row;
+		//previousColumn = column;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		FindMatches();
+		//FindMatches();
 		if (isMatched)
 		{
 			SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
@@ -47,12 +51,14 @@ public class Paint : MonoBehaviour {
 		{
 			//Move towards the target
 			tempPosition = new Vector2(targetX, transform.position.y);
-			transform.position = Vector2.Lerp(transform.position, tempPosition, .6f);
+			transform.position = Vector2.Lerp(transform.position, tempPosition, .5f);
 			if (board.allPaints[column, row] != this.gameObject)
 			{
 				board.allPaints[column, row] = this.gameObject;
-
 			}
+			findMatches.FindAllMatches();
+
+
 		} else
 		{
 			//Directly set the position
@@ -63,11 +69,14 @@ public class Paint : MonoBehaviour {
 		{
 			//Move towards the target
 			tempPosition = new Vector2(transform.position.x, targetY);
-			transform.position = Vector2.Lerp(transform.position, tempPosition, .6f);
+			transform.position = Vector2.Lerp(transform.position, tempPosition, .5f);
 			if (board.allPaints[column, row] != this.gameObject)
 			{
 				board.allPaints[column, row] = this.gameObject;
 			}
+			findMatches.FindAllMatches();
+
+
 		}
 		else
 		{
@@ -79,13 +88,20 @@ public class Paint : MonoBehaviour {
 	}
 
 	private void OnMouseDown(){
-		firstTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		if (board.currentState == GameState.move)
+		{
+			firstTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		}
+
 		//Debug.Log(firstTouchPosition);
 	}
 	private void OnMouseUp()
 	{
-		finalTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		CalculateAngle();
+		if (board.currentState == GameState.move)
+		{
+			finalTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			CalculateAngle();
+		}
 	}
 
 	void CalculateAngle()
@@ -95,38 +111,50 @@ public class Paint : MonoBehaviour {
 			swipeAngle = Mathf.Atan2(finalTouchPosition.y - firstTouchPosition.y, finalTouchPosition.x - firstTouchPosition.x) * 180 / Mathf.PI;
 			//Debug.Log(swipeAngle);
 			MovePieces();
+			board.currentState = GameState.wait;
 
+		}
+		else
+		{
+			board.currentState = GameState.move;
 		}
 	}
 
 	void MovePieces()
 	{
-		previousRow = row;
-		previousColumn = column;
+
 		if(swipeAngle > -45 && swipeAngle <= 45 && column < board.width - 1)
 		{
 			//Right Swipe
 			otherPaint = board.allPaints[column + 1, row];
+			previousRow = row;
+			previousColumn = column;
 			otherPaint.GetComponent<Paint>().column -= 1;
 			column += 1;
 		} else if (swipeAngle > 45 && swipeAngle <= 134 && row < board.height - 1)
 		{
 			//Up Swipe
 			otherPaint = board.allPaints[column, row + 1];
+			previousRow = row;
+			previousColumn = column;
 			otherPaint.GetComponent<Paint>().row -= 1;
 			row += 1;
 		} else if ((swipeAngle > 135 || swipeAngle <= -135) && column > 0)
 		{
 			//Left Swipe
 			otherPaint = board.allPaints[column - 1, row];
+			previousRow = row;
+			previousColumn = column;
 			otherPaint.GetComponent<Paint>().column += 1;
 			column -= 1;
 		} else if (swipeAngle < -45 && swipeAngle >= -135 && row > 0)
 			{
-				//Down Swipe
-				otherPaint = board.allPaints[column, row - 1];
-				otherPaint.GetComponent<Paint>().row += 1;
-				row -= 1;
+			//Down Swipe
+			otherPaint = board.allPaints[column, row - 1];
+			previousRow = row;
+			previousColumn = column;
+			otherPaint.GetComponent<Paint>().row += 1;
+			row -= 1;
 			}
 				
 		StartCoroutine(CheckMoveCo());
@@ -145,10 +173,14 @@ public class Paint : MonoBehaviour {
 				otherPaint.GetComponent<Paint>().column = column;
 				row = previousRow;
 				column = previousColumn;
+				yield return new WaitForSeconds(.5f);
+				board.currentState = GameState.move;
 			}
 			else
 			{
 				board.DestroyMatches();
+
+
 			}
 			otherPaint = null;
 		}

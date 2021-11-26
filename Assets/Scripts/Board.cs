@@ -10,17 +10,21 @@ public enum GameState
 
 public class Board : MonoBehaviour {
 
+	
 	public GameState currentState = GameState.move;
 	public int width;
 	public int height;
 	public int offSet;
 	public GameObject tilePrefab;
 	public GameObject[] paints;
+	public GameObject destroyEffect;
 	private BackgroundTile[,] allTiles;
 	public GameObject[,] allPaints;
+	private FindMatches findMatches;
 
 	// Use this for initialization
 	void Start () {
+		findMatches = FindObjectOfType<FindMatches>();
 		//tell how big the grid should be
 		allTiles = new BackgroundTile[width, height];
 		allPaints = new GameObject[width, height];
@@ -90,6 +94,9 @@ public class Board : MonoBehaviour {
 	{
 		if (allPaints[column, row].GetComponent<Paint>().isMatched)
 		{
+			findMatches.currentMatches.Remove(allPaints[column, row]);
+			GameObject particle = Instantiate(destroyEffect, allPaints[column, row].transform.position, Quaternion.identity);
+			Destroy(particle,.5f);
 			Destroy(allPaints[column, row]);
 			allPaints[column, row] = null;
 		}
@@ -162,8 +169,10 @@ public class Board : MonoBehaviour {
 			{
 				if(allPaints[i, j] != null)
 				{
+					//Debug.Log(allPaints[i, j].GetComponent<Paint>().isMatched + " isMatches in MatchesOnBoard");
 					if (allPaints[i, j].GetComponent<Paint>().isMatched)
 					{
+						Debug.Log("MatchesAt found after Refill");
 						return true;
 					}
 				}
@@ -176,13 +185,17 @@ public class Board : MonoBehaviour {
 	private IEnumerator FillBoardCo()
 	{
 		RefillBoard();
-		yield return new WaitForSeconds(.2f);
+		Debug.Log("RefillBoard");
+		yield return new WaitForSeconds(.3f);
 		int maxChecks = 0;
+		Debug.Log("MatchesAt on board is" + MatchesOnBoard());
 		while (MatchesOnBoard() && maxChecks < 100)
 		{
+			Debug.Log("maxChecks" + maxChecks); 
 			yield return new WaitForSeconds(.2f);
 			DestroyMatches();
 			maxChecks++;
+			
 		}
 		yield return new WaitForSeconds(.5f);
 		currentState = GameState.move;

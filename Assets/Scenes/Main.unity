@@ -191,6 +191,8 @@ MonoBehaviour:
   - {fileID: 1867622714853190, guid: c7c4e54b60c6bc54eb2ff1e9cddb2d8d, type: 2}
   - {fileID: 1081770270087880, guid: 3fa7277800a9744439a1e3b200b72019, type: 2}
   - {fileID: 1412289280392728, guid: 0031f4f116b83ef4d950e395a641f15d, type: 2}
+  destroyEffect: {fileID: 1740750783619830, guid: 663535e77da54e044a4569a8bbe84f98,
+    type: 2}
 --- !u!4 &1874009648
 Transform:
   m_ObjectHideFlags: 0

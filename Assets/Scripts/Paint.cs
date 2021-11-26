@@ -42,11 +42,13 @@ public class Paint : MonoBehaviour {
 		{
 			SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
 			mySprite.color = new Color(1f, 1f, 1f, .2f);
+			
 		}
 
 		//After we change the column position in MovePeices we Update the position actually here
 		targetX = column;
 		targetY = row;
+		//move horizontally
 		if (Mathf.Abs(targetX - transform.position.x) > .1)
 		{
 			//Move towards the target
@@ -65,6 +67,7 @@ public class Paint : MonoBehaviour {
 			tempPosition = new Vector2(targetX, transform.position.y);
 			transform.position = tempPosition;
 		}
+		//move vertically
 		if (Mathf.Abs(targetY - transform.position.y) > .1)
 		{
 			//Move towards the target

@@ -18,7 +18,6 @@ public class Board : MonoBehaviour {
 	public GameObject tilePrefab;
 	public GameObject[] paints;
 	public GameObject destroyEffect;
-	private BackgroundTile[,] allTiles;
 	public GameObject[,] allPaints;
 	private FindMatches findMatches;
 
@@ -26,7 +25,6 @@ public class Board : MonoBehaviour {
 	void Start () {
 		findMatches = FindObjectOfType<FindMatches>();
 		//tell how big the grid should be
-		allTiles = new BackgroundTile[width, height];
 		allPaints = new GameObject[width, height];
 		SetUp();
 	}
@@ -94,7 +92,6 @@ public class Board : MonoBehaviour {
 	{
 		if (allPaints[column, row].GetComponent<Paint>().isMatched)
 		{
-			findMatches.currentMatches.Remove(allPaints[column, row]);
 			GameObject particle = Instantiate(destroyEffect, allPaints[column, row].transform.position, Quaternion.identity);
 			Destroy(particle,.5f);
 			Destroy(allPaints[column, row]);
@@ -114,6 +111,7 @@ public class Board : MonoBehaviour {
 				}
 			}
 		}
+		findMatches.currentMatches.Clear();
 		StartCoroutine(DecreaseRowCo());
 	}
 
@@ -186,7 +184,7 @@ public class Board : MonoBehaviour {
 	{
 		RefillBoard();
 		Debug.Log("RefillBoard");
-		yield return new WaitForSeconds(.3f);
+		yield return new WaitForSeconds(.4f);
 		int maxChecks = 0;
 		Debug.Log("MatchesAt on board is" + MatchesOnBoard());
 		while (MatchesOnBoard() && maxChecks < 100)

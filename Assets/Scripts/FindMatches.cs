@@ -12,13 +12,28 @@ public class FindMatches : MonoBehaviour {
 		board = FindObjectOfType<Board>();
 	}
 	
-	public void FindAllMatches()
+public void FindAllMatches()
 	{
 		StartCoroutine(FindAllMatchesCo());
 	}
-	private IEnumerator FindAllMatchesCo()
+
+private void AddToListAndMatch(GameObject paint){
+	if (!currentMatches.Contains(paint))
 	{
-		yield return new WaitForSeconds (.2f);
+		currentMatches.Add(paint);
+	}
+	paint.GetComponent<Paint>().isMatched = true;
+}
+
+private void GetNearbyPieces(GameObject paint1, GameObject paint2, GameObject paint3)
+{
+	AddToListAndMatch(paint1);
+	AddToListAndMatch(paint2);
+	AddToListAndMatch(paint3);
+}
+private IEnumerator FindAllMatchesCo()
+	{
+		yield return new WaitForSeconds (.4f);
 		for (int i = 0; i < board.width; i++)
 		{
 			for(int j = 0; j < board.height; j++)
@@ -33,28 +48,13 @@ public class FindMatches : MonoBehaviour {
 						GameObject leftPaint = board.allPaints[i - 1, j];
 						//directly to right
 						GameObject rightPaint = board.allPaints[i + 1, j];
-						if (leftPaint != null && rightPaint != null)
-						{
+						if (leftPaint != null && rightPaint != null) 
+						{ 
+
 							if(leftPaint.tag == currentPaint.tag && rightPaint.tag == currentPaint.tag)
 							{
-								if (!currentMatches.Contains(leftPaint))
-								{
-									currentMatches.Add(leftPaint);
-								}
-
-								//Debug.Log("left paint" + leftPaint);
-								leftPaint.GetComponent<Paint>().isMatched = true;
-								if (!currentMatches.Contains(rightPaint))
-								{
-									currentMatches.Add(rightPaint);
-								}
-								rightPaint.GetComponent<Paint>().isMatched = true;
-								if (!currentMatches.Contains(currentPaint))
-								{
-									currentMatches.Add(currentPaint);
-								}
-								currentPaint.GetComponent<Paint>().isMatched = true;
-								//Debug.Log("horizontal isMatched");
+								GetNearbyPieces(leftPaint, currentPaint, rightPaint);
+				
 							}
 						}
 					}
@@ -67,24 +67,10 @@ public class FindMatches : MonoBehaviour {
 						GameObject upPaint = board.allPaints[i, j + 1];
 						if (downPaint != null && upPaint != null)
 						{
+
 							if (downPaint.tag == currentPaint.tag && upPaint.tag == currentPaint.tag)
 							{
-								if (!currentMatches.Contains(downPaint))
-								{
-									currentMatches.Add(downPaint);
-								}
-								downPaint.GetComponent<Paint>().isMatched = true;
-								if (!currentMatches.Contains(upPaint))
-								{
-									currentMatches.Add(upPaint);
-								}
-								upPaint.GetComponent<Paint>().isMatched = true;
-								if (!currentMatches.Contains(currentPaint))
-								{
-									currentMatches.Add(currentPaint);
-								}
-								currentPaint.GetComponent<Paint>().isMatched = true;
-								//Debug.Log("vertical isMatched");
+								GetNearbyPieces(upPaint, currentPaint, downPaint);
 							}
 						}
 					}

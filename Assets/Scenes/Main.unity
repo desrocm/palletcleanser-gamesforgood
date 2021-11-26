@@ -180,7 +180,7 @@ MonoBehaviour:
   currentState: 1
   width: 7
   height: 10
-  offSet: 20
+  offSet: 0
   tilePrefab: {fileID: 1287481517897894, guid: 6c3b664aa44e0d242988b014d8403418, type: 2}
   paints:
   - {fileID: 1715241399372446, guid: 18b809e40994f51438b06813c4eff795, type: 2}

@@ -113,58 +113,54 @@ public class Paint : MonoBehaviour {
 		{
 			swipeAngle = Mathf.Atan2(finalTouchPosition.y - firstTouchPosition.y, finalTouchPosition.x - firstTouchPosition.x) * 180 / Mathf.PI;
 			//Debug.Log(swipeAngle);
-			MovePieces();
 			board.currentState = GameState.wait;
+			MovePieces();
+
 
 		}
 		else
 		{
 			board.currentState = GameState.move;
+
 		}
 	}
 
+	void MovePiecesActual(Vector2 direction)
+	{
+		otherPaint = board.allPaints[column + (int)direction.x, row + (int)direction.y];
+		previousRow = row;
+		previousColumn = column;
+		otherPaint.GetComponent<Paint>().column += -1 * (int)direction.x;
+		otherPaint.GetComponent<Paint>().row += -1 * (int)direction.y;
+		column += (int)direction.x;
+		row += (int)direction.y;
+		StartCoroutine(CheckMoveCo());
+	}
 	void MovePieces()
 	{
 
 		if(swipeAngle > -45 && swipeAngle <= 45 && column < board.width - 1)
 		{
 			//Right Swipe
-			otherPaint = board.allPaints[column + 1, row];
-			previousRow = row;
-			previousColumn = column;
-			otherPaint.GetComponent<Paint>().column -= 1;
-			column += 1;
+			MovePiecesActual(Vector2.right);
 		} else if (swipeAngle > 45 && swipeAngle <= 134 && row < board.height - 1)
 		{
 			//Up Swipe
-			otherPaint = board.allPaints[column, row + 1];
-			previousRow = row;
-			previousColumn = column;
-			otherPaint.GetComponent<Paint>().row -= 1;
-			row += 1;
+			MovePiecesActual(Vector2.up);
 		} else if ((swipeAngle > 135 || swipeAngle <= -135) && column > 0)
 		{
 			//Left Swipe
-			otherPaint = board.allPaints[column - 1, row];
-			previousRow = row;
-			previousColumn = column;
-			otherPaint.GetComponent<Paint>().column += 1;
-			column -= 1;
+			MovePiecesActual(Vector2.left);
 		} else if (swipeAngle < -45 && swipeAngle >= -135 && row > 0)
 			{
 			//Down Swipe
-			otherPaint = board.allPaints[column, row - 1];
-			previousRow = row;
-			previousColumn = column;
-			otherPaint.GetComponent<Paint>().row += 1;
-			row -= 1;
-			}
+			MovePiecesActual(Vector2.down);
+		}
+		board.currentState = GameState.move;
+		}
+		
 				
-		StartCoroutine(CheckMoveCo());
-
-
-	}
-
+	//Makes sure there is a match there before finishing the move
 	public IEnumerator CheckMoveCo()
 	{
 		yield return new WaitForSeconds(.5f);
@@ -178,9 +174,11 @@ public class Paint : MonoBehaviour {
 				column = previousColumn;
 				yield return new WaitForSeconds(.5f);
 				board.currentState = GameState.move;
+				Debug.Log("Swipe failed");
 			}
 			else
 			{
+				Debug.Log("Swipe Made");
 				board.DestroyMatches();
 
 
@@ -188,40 +186,6 @@ public class Paint : MonoBehaviour {
 			otherPaint = null;
 		}
 		
-	}
-
-	void FindMatches()
-	{
-		if(column > 0 && column < board.width - 1)
-		{
-			GameObject leftPaint1 = board.allPaints[column - 1, row];
-			GameObject rightPaint1 = board.allPaints[column + 1, row];
-			if (leftPaint1 != null && rightPaint1 != null)
-			{
-				if (leftPaint1.tag == this.gameObject.tag && rightPaint1.tag == this.gameObject.tag)
-				{
-					//mathed horizontally
-					leftPaint1.GetComponent<Paint>().isMatched = true;
-					rightPaint1.GetComponent<Paint>().isMatched = true;
-					isMatched = true;
-				}
-			}
-		}
-		if (row > 0 && row < board.height - 1)
-		{
-			GameObject upPaint1 = board.allPaints[column, row + 1];
-			GameObject downPaint1 = board.allPaints[column, row - 1];
-			if (upPaint1 != null && downPaint1 != null)
-			{
-				if (upPaint1.tag == this.gameObject.tag && downPaint1.tag == this.gameObject.tag)
-				{
-					//mathed horizontally
-					upPaint1.GetComponent<Paint>().isMatched = true;
-					downPaint1.GetComponent<Paint>().isMatched = true;
-					isMatched = true;
-				}
-			}
-		}
 	}
 
 }

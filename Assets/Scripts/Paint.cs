@@ -111,9 +111,9 @@ public class Paint : MonoBehaviour {
 	{
 		if (Mathf.Abs(finalTouchPosition.y - firstTouchPosition.y) > swipeResist || Mathf.Abs(finalTouchPosition.x - firstTouchPosition.x) > swipeResist)
 		{
+			board.currentState = GameState.wait; 
 			swipeAngle = Mathf.Atan2(finalTouchPosition.y - firstTouchPosition.y, finalTouchPosition.x - firstTouchPosition.x) * 180 / Mathf.PI;
 			//Debug.Log(swipeAngle);
-			board.currentState = GameState.wait;
 			MovePieces();
 
 
@@ -130,34 +130,47 @@ public class Paint : MonoBehaviour {
 		otherPaint = board.allPaints[column + (int)direction.x, row + (int)direction.y];
 		previousRow = row;
 		previousColumn = column;
-		otherPaint.GetComponent<Paint>().column += -1 * (int)direction.x;
-		otherPaint.GetComponent<Paint>().row += -1 * (int)direction.y;
-		column += (int)direction.x;
-		row += (int)direction.y;
-		StartCoroutine(CheckMoveCo());
+		if (otherPaint != null)
+		{
+			otherPaint.GetComponent<Paint>().column += -1 * (int)direction.x;
+			otherPaint.GetComponent<Paint>().row += -1 * (int)direction.y;
+			column += (int)direction.x;
+			row += (int)direction.y;
+			StartCoroutine(CheckMoveCo());
+		} else
+		{
+			board.currentState = GameState.move;
+		}
 	}
+	//calculate direction for the move
 	void MovePieces()
 	{
 
-		if(swipeAngle > -45 && swipeAngle <= 45 && column < board.width - 1)
+		if (swipeAngle > -45 && swipeAngle <= 45 && column < board.width - 1)
 		{
 			//Right Swipe
 			MovePiecesActual(Vector2.right);
-		} else if (swipeAngle > 45 && swipeAngle <= 134 && row < board.height - 1)
+		}
+		else if (swipeAngle > 45 && swipeAngle <= 134 && row < board.height - 1)
 		{
 			//Up Swipe
 			MovePiecesActual(Vector2.up);
-		} else if ((swipeAngle > 135 || swipeAngle <= -135) && column > 0)
+		}
+		else if ((swipeAngle > 135 || swipeAngle <= -135) && column > 0)
 		{
 			//Left Swipe
 			MovePiecesActual(Vector2.left);
-		} else if (swipeAngle < -45 && swipeAngle >= -135 && row > 0)
-			{
+		}
+		else if (swipeAngle < -45 && swipeAngle >= -135 && row > 0)
+		{
 			//Down Swipe
 			MovePiecesActual(Vector2.down);
 		}
-		board.currentState = GameState.move;
+		else
+		{
+			board.currentState = GameState.move;
 		}
+	}
 		
 				
 	//Makes sure there is a match there before finishing the move

@@ -33,7 +33,8 @@ private void GetNearbyPieces(GameObject paint1, GameObject paint2, GameObject pa
 }
 private IEnumerator FindAllMatchesCo()
 	{
-		yield return new WaitForSeconds (.4f);
+		yield return new WaitForSeconds (.2f);
+		//Debug.Log("FindAll Matches Co wait back to normal 2");
 		for (int i = 0; i < board.width; i++)
 		{
 			for(int j = 0; j < board.height; j++)
@@ -49,8 +50,8 @@ private IEnumerator FindAllMatchesCo()
 						//directly to right
 						GameObject rightPaint = board.allPaints[i + 1, j];
 						if (leftPaint != null && rightPaint != null) 
-						{ 
-
+						{
+							//Debug.Log("Check tags in Find all Matches Co");
 							if(leftPaint.tag == currentPaint.tag && rightPaint.tag == currentPaint.tag)
 							{
 								GetNearbyPieces(leftPaint, currentPaint, rightPaint);

@@ -193,25 +193,8 @@ MonoBehaviour:
   - {fileID: 1412289280392728, guid: 0031f4f116b83ef4d950e395a641f15d, type: 2}
   destroyEffect: {fileID: 1740750783619830, guid: 663535e77da54e044a4569a8bbe84f98,
     type: 2}
-  boardLayout:
-  - x: 0
-    y: 0
-    tileKind: 1
-  - x: 6
-    y: 9
-    tileKind: 1
-  - x: 6
-    y: 0
-    tileKind: 1
-  - x: 0
-    y: 9
-    tileKind: 1
-  - x: 4
-    y: 4
-    tileKind: 1
-  - x: 5
-    y: 4
-    tileKind: 1
+  boardLayout: []
+  currentPaint: {fileID: 0}
 --- !u!4 &1874009648
 Transform:
   m_ObjectHideFlags: 0

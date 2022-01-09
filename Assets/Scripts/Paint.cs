@@ -13,18 +13,32 @@ public class Paint : MonoBehaviour {
 	public int targetY;
 	public bool isMatched = false;
 
+
+
 	private FindMatches findMatches;
 	private Board board;
-	private GameObject otherPaint;
+	public GameObject otherPaint;
 	private Vector2 firstTouchPosition;
 	private Vector2 finalTouchPosition;
 	private Vector2 tempPosition;
+
+	[Header("Swipe Stuff")]
 	public float swipeAngle = 0;
 	public float swipeResist = 1f;
+
+	[Header("Powerup Stuff")]
+	public bool isColumnBomb;
+	public bool isRowBomb;
+	public GameObject rowArrow;
+	public GameObject columnArrow;
 
 
 	// Use this for initialization
 	void Start () {
+
+		isColumnBomb = false;
+		isRowBomb = false;
+
 		board = FindObjectOfType<Board>();
 		findMatches = FindObjectOfType<FindMatches>();
 		//targetX = (int)transform.position.x;
@@ -33,17 +47,30 @@ public class Paint : MonoBehaviour {
 		//column = targetX;
 		//previousRow = row;
 		//previousColumn = column;
+
 	}
-	
+
+	//this is for testing and debug only.
+	private void OnMouseOver()
+	{
+		if (Input.GetMouseButtonDown(1))
+		{
+			isRowBomb = true;
+			GameObject arrow = Instantiate(rowArrow, transform.position, Quaternion.identity);
+			arrow.transform.parent = this.transform;
+		}
+	}
+
 	// Update is called once per frame
 	void Update () {
-		//FindMatches();
-		if (isMatched)
+
+		/*if (isMatched)
 		{
 			SpriteRenderer mySprite = GetComponent<SpriteRenderer>();
 			mySprite.color = new Color(1f, 1f, 1f, .2f);
 			
 		}
+		*/
 
 		//After we change the column position in MovePeices we Update the position actually here
 		targetX = column;
@@ -115,12 +142,15 @@ public class Paint : MonoBehaviour {
 			swipeAngle = Mathf.Atan2(finalTouchPosition.y - firstTouchPosition.y, finalTouchPosition.x - firstTouchPosition.x) * 180 / Mathf.PI;
 			//Debug.Log(swipeAngle);
 			MovePieces();
+			board.currentPaint = this;
 
 
 		}
 		else
 		{
 			board.currentState = GameState.move;
+
+
 
 		}
 	}
@@ -186,6 +216,7 @@ public class Paint : MonoBehaviour {
 				row = previousRow;
 				column = previousColumn;
 				yield return new WaitForSeconds(.5f);
+				board.currentPaint = null;
 				board.currentState = GameState.move;
 				Debug.Log("Swipe failed");
 			}
@@ -193,12 +224,23 @@ public class Paint : MonoBehaviour {
 			{
 				Debug.Log("Swipe Made");
 				board.DestroyMatches();
-
-
 			}
-			otherPaint = null;
+			//otherPaint = null;
 		}
 		
+	}
+
+	public void MakeRowBomb()
+	{
+		isRowBomb = true;
+		GameObject arrow = Instantiate(rowArrow, transform.position, Quaternion.identity);
+		arrow.transform.parent = this.transform;
+	}
+	public void MakeColumnBomb()
+	{
+		isColumnBomb = true;
+		GameObject arrow = Instantiate(columnArrow, transform.position, Quaternion.identity);
+		arrow.transform.parent = this.transform;
 	}
 
 }

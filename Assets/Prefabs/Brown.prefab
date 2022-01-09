@@ -77,6 +77,11 @@ MonoBehaviour:
   isMatched: 0
   swipeAngle: 0
   swipeResist: 1
+  isColumnBomb: 0
+  isRowBomb: 0
+  rowArrow: {fileID: 1292558964309156, guid: f713ca4b19ea07046893f905813b5e82, type: 2}
+  columnArrow: {fileID: 1952824144008590, guid: 224c57fe7ce851c45bd8416ee48bab9f,
+    type: 2}
 --- !u!212 &212387718682389246
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -107,7 +112,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1311952517
-  m_SortingLayer: 1
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 255a49cadb7822e4ead9f1d48cca1249, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

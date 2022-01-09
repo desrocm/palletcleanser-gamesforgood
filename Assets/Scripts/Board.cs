@@ -35,6 +35,7 @@ public class Board : MonoBehaviour {
 	public TileType[] boardLayout;
 	private bool[,] blankSpaces;
 	public GameObject[,] allPaints;
+	public Paint currentPaint;
 	private FindMatches findMatches;
 
 	// Use this for initialization
@@ -138,6 +139,11 @@ public class Board : MonoBehaviour {
 	{
 		if (allPaints[column, row].GetComponent<Paint>().isMatched)
 		{
+			//how many elements are in the matched pieces list from findmatches?
+			if(findMatches.currentMatches.Count == 4 || findMatches.currentMatches.Count == 7)
+			{
+				findMatches.CheckBombs();
+			}
 			GameObject particle = Instantiate(destroyEffect, allPaints[column, row].transform.position, Quaternion.identity);
 			Destroy(particle,.5f);
 			Destroy(allPaints[column, row]);
@@ -296,6 +302,8 @@ public class Board : MonoBehaviour {
 			maxChecks++;
 			
 		}
+		findMatches.currentMatches.Clear();
+		currentPaint = null;
 		yield return new WaitForSeconds(.5f);
 		//Debug.Log("FillBoard Co wait to move .5f");
 		currentState = GameState.move;
